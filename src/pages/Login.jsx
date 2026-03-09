@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Lock, Dumbbell, Eye, EyeOff, ChevronRight, Shield, Headset } from 'lucide-react';
+import API from '../configs/Api';
+import { useNavigate } from 'react-router-dom';
 
 const InputField = ({ label, type, icon: Icon, placeholder, value, onChange, togglePassword, showPassword }) => (
   <div className="space-y-1 sm:space-y-2">
@@ -32,18 +34,58 @@ const InputField = ({ label, type, icon: Icon, placeholder, value, onChange, tog
 );
 
 const LoginPage = () => {
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const navigate = useNavigate();
+
+  /* -------- LOGIN FUNCTION -------- */
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+
+      setLoading(true);
+      setMessage('');
+
+      const res = await API.post('/auth/login', {
+        email,
+        password
+      });
+      
+      const data = res.data;
+
+      setMessage(data.message);
+
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+      navigate('/home');
+    } catch (error) {
+
+      if (error.response) {
+        setMessage(error.response.data.message);
+      } else {
+        setMessage("Server not responding");
+      }
+
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    // h-[100dvh] is the modern way to handle mobile browser toolbars
     <div className="h-[100dvh] w-full bg-white flex flex-col lg:flex-row overflow-hidden">
       
-      {/* LEFT SECTION: BRANDING (Flexible height/width) */}
+      {/* LEFT SECTION: BRANDING */}
       <div className="relative h-[35%] lg:h-full lg:w-[45%] xl:w-[40%] flex flex-col justify-between p-6 sm:p-8 lg:p-12 xl:p-16 overflow-hidden bg-slate-900 shrink-0">
         
-        {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img 
             src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop" 
@@ -72,7 +114,6 @@ const LoginPage = () => {
           </div>
         </div>
 
-        {/* Support Badges - Adjusted for smaller height profiles */}
         <div className="relative z-10 hidden sm:block">
           <div className="space-y-3 lg:space-y-5">
             <div className="flex items-center gap-3 text-slate-200">
@@ -87,19 +128,27 @@ const LoginPage = () => {
         </div>
       </div>
 
-      {/* RIGHT SECTION: LOGIN FORM (Flexible Centering) */}
+      {/* RIGHT SECTION */}
       <div className="flex-1 flex items-center justify-center p-4 sm:p-8 lg:p-12 xl:p-20 bg-slate-50/50 relative overflow-hidden">
-        {/* Visual Decoration */}
+
         <div className="absolute top-0 right-0 w-32 h-32 lg:w-64 lg:h-64 bg-slate-200/40 rounded-bl-full blur-2xl opacity-50"></div>
         
-        {/* Form Container - Constrained for Mobile/Small tablets to ensure viewport fit */}
         <div className="w-full max-w-md bg-white p-6 sm:p-10 lg:p-12 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-slate-100 relative z-10">
+
           <div className="mb-6 lg:mb-10 text-center lg:text-left">
             <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Welcome Back</h2>
             <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1">Enter your admin credentials</p>
           </div>
 
-          <form onSubmit={(e) => e.preventDefault()} className="space-y-4 lg:space-y-6">
+          {/* Backend Message */}
+          {message && (
+            <div className="mb-4 text-sm font-semibold text-red-600">
+              {message}
+            </div>
+          )}
+
+          <form onSubmit={handleLogin} className="space-y-4 lg:space-y-6">
+
             <InputField 
               label="Work Email"
               type="email"
@@ -120,31 +169,23 @@ const LoginPage = () => {
               showPassword={showPassword}
             />
 
-            <div className="flex items-center justify-between px-1">
-              <label className="flex items-center cursor-pointer group">
-                <input type="checkbox" className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded border-slate-300 text-black focus:ring-black accent-black" />
-                <span className="ml-2 text-[12px] sm:text-sm font-semibold text-slate-500 group-hover:text-black transition-colors">Remember device</span>
-              </label>
-              <button type="button" className="text-[12px] sm:text-sm font-bold text-black hover:underline">
-                Forgot?
-              </button>
-            </div>
-
             <button
               type="submit"
+              disabled={loading}
               className="w-full bg-black hover:bg-slate-800 text-white font-bold py-3 sm:py-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 group shadow-xl shadow-slate-200 active:scale-[0.98]"
             >
-              Access Admin Suite
+              {loading ? "Logging in..." : "Access Admin Suite"}
               <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </button>
+
           </form>
 
-          {/* Fixed Footer within card */}
           <div className="mt-6 lg:mt-10 pt-6 border-t border-slate-100 text-center">
             <p className="text-[11px] sm:text-sm text-slate-400 font-medium">
               © 2026 GymDesk ERP. <span className="text-black font-bold cursor-pointer hover:underline">Support Portal</span>
             </p>
           </div>
+
         </div>
       </div>
     </div>
