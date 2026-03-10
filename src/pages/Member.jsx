@@ -59,7 +59,7 @@ const Member = () => {
           <p className="text-slate-500 text-sm font-medium">Manage your gym's active member base</p>
         </div>
         <button 
-          onClick={() => navigate('/members/add')}
+          onClick={() => navigate('/add-member')}
           className="bg-slate-900 text-white px-6 py-3 rounded-2xl text-xs font-black flex items-center justify-center gap-2 hover:bg-slate-800 transition-all shadow-xl shadow-slate-200"
         >
           <UserPlus size={16} /> ADD NEW MEMBER

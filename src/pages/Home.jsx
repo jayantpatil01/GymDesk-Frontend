@@ -1,25 +1,27 @@
 import React from 'react';
-import { 
-  Users, UserPlus, TrendingUp, 
-  IndianRupee, BellRing, Download, 
+import {
+  Users, UserPlus, TrendingUp,
+  IndianRupee, BellRing, Download,
   Plus, Calendar, ArrowUpRight,
   Search, Filter, ChevronRight
 } from 'lucide-react';
 import { FaWhatsapp } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+  const navigate = useNavigate();
   const currentMonth = new Date().toLocaleString('default', { month: 'long' });
 
   return (
     <div className="max-w-[1600px] mx-auto animate-in fade-in duration-700">
-      
+
       {/* 1. TOP GLOBAL SEARCH & ACTION BAR */}
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-          <input 
-            type="text" 
-            placeholder="Search members, transactions, or plans..." 
+          <input
+            type="text"
+            placeholder="Search members, transactions, or plans..."
             className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/5 transition-all"
           />
         </div>
@@ -27,7 +29,10 @@ const Home = () => {
           <button className="p-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 transition-all">
             <Filter size={18} />
           </button>
-          <button className="flex items-center gap-2 bg-slate-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-slate-200 hover:bg-slate-800 transition-all">
+          <button
+            onClick={() => navigate('/add-member')}
+            className="flex items-center gap-2 bg-slate-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-slate-200 hover:bg-slate-800 transition-all active:scale-95"
+          >
             <Plus size={18} />
             <span>New Admission</span>
           </button>
@@ -35,10 +40,10 @@ const Home = () => {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-        
+
         {/* LEFT COLUMN: Main Operations (8/12) */}
         <div className="xl:col-span-8 space-y-6">
-          
+
           {/* STATS STRIP */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
@@ -114,8 +119,8 @@ const Home = () => {
                     <p className="text-sm font-bold text-slate-900">{row.name}</p>
                     <p className="text-[10px] text-rose-500 font-bold uppercase mt-1">Expires: {row.date}</p>
                   </div>
-                  <a 
-                    href={`https://wa.me/${row.phone}`} 
+                  <a
+                    href={`https://wa.me/${row.phone}`}
                     className="w-10 h-10 bg-[#25D366] text-white rounded-xl flex items-center justify-center shadow-lg shadow-green-100 hover:scale-110 transition-transform"
                   >
                     <FaWhatsapp size={18} />
@@ -128,7 +133,7 @@ const Home = () => {
 
         {/* RIGHT COLUMN: Financial & Summary (4/12) */}
         <div className="xl:col-span-4 space-y-6">
-          
+
           {/* COLLECTION CARD */}
           <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl shadow-slate-200">
             <div className="relative z-10">
@@ -136,7 +141,7 @@ const Home = () => {
               <h2 className="text-4xl font-black mb-6 flex items-baseline gap-1">
                 <span className="text-xl font-normal text-slate-500">₹</span>3,42,000
               </h2>
-              
+
               <div className="space-y-4">
                 <div className="flex justify-between items-center py-3 border-t border-white/10">
                   <span className="text-xs text-slate-400">GST Collected (18%)</span>
@@ -152,7 +157,7 @@ const Home = () => {
                 <Download size={14} /> Download GST Report
               </button>
             </div>
-            
+
             {/* Background design elements */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-[60px]" />
             <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-emerald-500/10 blur-[60px]" />
