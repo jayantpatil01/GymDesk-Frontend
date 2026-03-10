@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Mail, Lock, Dumbbell, Eye, EyeOff, ChevronRight, Shield, Headset } from 'lucide-react';
 import API from '../configs/Api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const InputField = ({ label, type, icon: Icon, placeholder, value, onChange, togglePassword, showPassword }) => (
   <div className="space-y-1 sm:space-y-2">
@@ -34,7 +34,6 @@ const InputField = ({ label, type, icon: Icon, placeholder, value, onChange, tog
 );
 
 const LoginPage = () => {
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -43,14 +42,22 @@ const LoginPage = () => {
   const [message, setMessage] = useState('');
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  /* -------- CHECK FOR REDIRECT MESSAGES -------- */
+  useEffect(() => {
+    if (location.state?.message) {
+      setMessage(location.state.message);
+      // Clean up the state so message doesn't persist on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   /* -------- LOGIN FUNCTION -------- */
-
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-
       setLoading(true);
       setMessage('');
 
@@ -68,13 +75,11 @@ const LoginPage = () => {
       }
       navigate('/home');
     } catch (error) {
-
       if (error.response) {
         setMessage(error.response.data.message);
       } else {
         setMessage("Server not responding");
       }
-
     } finally {
       setLoading(false);
     }
@@ -140,9 +145,9 @@ const LoginPage = () => {
             <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1">Enter your admin credentials</p>
           </div>
 
-          {/* Backend Message */}
+          {/* Backend Message / Access Denied Message */}
           {message && (
-            <div className="mb-4 text-sm font-semibold text-red-600">
+            <div className="mb-4 p-3 bg-red-50 border-l-4 border-red-500 text-sm font-semibold text-red-600">
               {message}
             </div>
           )}

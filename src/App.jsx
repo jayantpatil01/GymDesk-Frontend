@@ -1,31 +1,40 @@
-import React from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-// Layouts import
-import Layout from './components/Layout'
-
-// Pages import 
-import Loginpage from './pages/Login'
-import Home from './pages/Home'
+// 1. Import your components
+import ProtectedRoute from './utils/ProtectedRoute';
+import Layout from './components/Layout';
+import LoginPage from './pages/Login';
+import Home from './pages/Home';
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Route */}
-        <Route path="/" element={<Loginpage />} />
+        
+        {/* PUBLIC ROUTE: Anyone can see the Login page */}
+        <Route path="/" element={<LoginPage />} />
 
-        {/* Private Routes grouped under Layout */}
-        <Route path="/home" element={<Layout />}>
+        {/* PROTECTED ROUTES: Only users with a token can see these */}
+        {/* We wrap the 'Layout' so every page inside it is protected automatically */}
+        <Route 
+          path="/home" 
+          element={
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
+          {/* This 'index' means when you go to /home, it shows the Home component */}
           <Route index element={<Home />} />
           
-          {/* Example of adding another page later: */}
+          {/* If you add a 'Members' page later, it goes here: */}
           {/* <Route path="members" element={<Members />} /> */}
         </Route>
 
       </Routes>
     </BrowserRouter>
-  )
-}
+  );
+};
 
-export default App
+export default App;

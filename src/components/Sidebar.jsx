@@ -5,6 +5,7 @@ import {
   Dumbbell, ChevronRight 
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { logout } from '../configs/logout.js';
 
 const NavSection = ({ title, children }) => (
   <div className="mb-8">
@@ -26,7 +27,6 @@ const SidebarItem = ({ icon: Icon, label, active, onClick, badge }) => (
     `}
   >
     <div className="flex items-center gap-3">
-      {/* Icon with a subtle background container */}
       <div className={`
         p-1 rounded-lg transition-all duration-300
         ${active ? 'bg-white/10' : 'bg-transparent group-hover:bg-white'}
@@ -52,7 +52,6 @@ const SidebarItem = ({ icon: Icon, label, active, onClick, badge }) => (
       />
     )}
 
-    {/* The Active "Indicator" Line */}
     {active && (
       <div className="absolute left-[-1rem] w-1 h-6 bg-slate-900 rounded-r-full" />
     )}
@@ -65,10 +64,16 @@ const Sidebar = () => {
 
   const isActive = (path) => location.pathname === path;
 
+  /* -------- LOGOUT HANDLER -------- */
+  const handleSignOut = () => {
+    // We pass navigate to the logout function so it can redirect the user
+    logout(navigate);
+  };
+
   return (
     <div className="h-full flex flex-col bg-[#F8FAFC] border-r border-slate-200 p-5 select-none font-sans">
       
-      {/* 1. BRANDING - Clean & Spaced */}
+      {/* 1. BRANDING */}
       <div className="flex items-center gap-3.5 px-3 mb-12 mt-4">
         <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center shadow-lg shadow-slate-200 shrink-0">
           <Dumbbell className="text-white" size={20} strokeWidth={2.5} />
@@ -78,7 +83,7 @@ const Sidebar = () => {
         </div>
       </div>
 
-      {/* 2. NAVIGATION - The Core */}
+      {/* 2. NAVIGATION */}
       <div className="flex-1 overflow-y-auto no-scrollbar">
         
         <NavSection title="Main Operations">
@@ -128,7 +133,12 @@ const Sidebar = () => {
           active={isActive('/settings')}
           onClick={() => navigate('/settings')}
         />
-        <button className="w-full flex items-center gap-3 px-4 py-3 mt-2 rounded-xl text-[13.5px] font-medium text-slate-500 hover:bg-rose-50 hover:text-rose-600 transition-all duration-200 group">
+        
+        {/* LOGOUT BUTTON */}
+        <button 
+          onClick={handleSignOut}
+          className="w-full flex items-center gap-3 px-4 py-3 mt-2 rounded-xl text-[13.5px] font-medium text-slate-500 hover:bg-rose-50 hover:text-rose-600 transition-all duration-200 group"
+        >
           <LogOut size={18} strokeWidth={1.5} className="group-hover:translate-x-0.5 transition-transform" />
           <span>Sign Out</span>
         </button>
